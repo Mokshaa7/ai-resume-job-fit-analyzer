@@ -1,0 +1,19 @@
+Key Responsibilities:
+
+Mine, process, and analyze web, product, sales, and digital marketing data at an event level. 
+Utilize traditional machine learning techniques and language models (LLMs) to build great AI agents for different business needs. 
+Assist in developing and optimizing LLM-driven solutions for tasks such as text summarization and basic customer support automation. 
+Contribute to building and deploying predictive models and machine learning algorithms across customer profile and usage datasets. 
+Support the deployment of machine learning models into production environments. 
+Assist in designing and implementing basic model activation strategies and participating in A/B testing plans. 
+Conduct evaluations of LLMs, focusing on basic performance metrics like accuracy and latency. 
+Integrate LLM agents with APIs and assist in maintaining data models and improving taxonomy. 
+
+Key Skills
+
+Hands on experience with LLM models and basic knowledge of evaluation metrics for LLMs. 
+Knowledge of designing and deploying agentic systems. knowledge bases, retrieval systems (RAG architecture), and orchestrating dynamic multi-agent workflows. 
+Exposure to machine learning techniques including supervised and unsupervised learning 
+Proficiency in Python, SciKit, SQL, Jupyter Notebooks and understanding of cloud platforms for data science tasks. 
+Basic understanding of data mining and statistical analysis techniques. 
+Continuous learner, keeping up-to-date with the latest advances in transformers, generative AI models, retrieval-augmented generation (RAG), and agentic AI frameworks.

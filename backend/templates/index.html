@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume–Job Fit Analyzer</title>
+    <style>
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #eef2ff, #f8fafc);
+        padding: 40px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 24px;
+        color: #1e293b;
+    }
+
+    label {
+        display: block;
+        margin-top: 14px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    textarea,
+    input[type="file"] {
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        font-size: 14px;
+    }
+
+    textarea:focus,
+    input[type="file"]:focus {
+        outline: none;
+        border-color: #6366f1;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 22px;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(90deg, #4f46e5, #6366f1);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(79, 70, 229, 0.35);
+    }
+
+    .result {
+        margin-top: 28px;
+        padding: 22px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border-left: 5px solid #6366f1;
+    }
+
+    .score {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .verdict {
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .suggestions {
+        margin-top: 12px;
+    }
+
+    .suggestions ul {
+        margin-top: 6px;
+        padding-left: 18px;
+    }
+
+    .suggestions li {
+        margin-bottom: 4px;
+        color: #475569;
+    }
+</style>
+
+</head>
+
+<body>
+<div class="container">
+    <h2>Resume–Job Fit Analyzer</h2>
+
+    <form action="/rank" method="post" enctype="multipart/form-data">
+        <label><b>Upload Your Resume (PDF)</b></label>
+        <input type="file" name="resumes" accept=".pdf" required>
+
+
+        <label><b>Paste Job Description</b></label>
+        <textarea name="job_description"
+                  rows="6"
+                  placeholder="Paste the job description here..."
+                  required></textarea>
+
+        <button type="submit">Analyze Fit</button>
+    </form>
+
+    {% if match_score is not none %}
+        <div class="result">
+            <div class="score">Match Score: {{ match_score }}%</div>
+            <div class="verdict">{{ verdict }}</div>
+            <p>{{ advice }}</p>
+
+            {% if suggestions %}
+                <div class="suggestions">
+                    <b>How to improve:</b>
+                    <ul>
+                        {% for s in suggestions %}
+                            <li>{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
