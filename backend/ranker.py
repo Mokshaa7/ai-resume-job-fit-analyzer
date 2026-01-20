@@ -5,15 +5,23 @@ from backend.preprocessor import clean_text
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from backend.parser import load_resumes_from_folder
+from sentence_transformers import SentenceTransformer
+import os
 
-# Load embedding model once
-model = SentenceTransformer(
-    "all-MiniLM-L6-v2",
-    local_files_only=True
-)
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer(
+            "all-MiniLM-L6-v2",
+            cache_folder=os.getenv("TRANSFORMERS_CACHE", "/tmp/huggingface")
+        )
+    return _model
 
 
 def embed(text):
+    model = get_model()
     return model.encode(text)
 
 
