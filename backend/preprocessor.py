@@ -1,25 +1,57 @@
+import os
 import re
 import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
 
-stop_words = set(stopwords.words("english"))
+# -----------------------------
+# NLTK setup (Render-safe)
+# -----------------------------
 
+NLTK_DATA_DIR = "/tmp/nltk_data"
 
-def clean_text(text):
+# Ensure NLTK knows where to look
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.append(NLTK_DATA_DIR)
+
+# Load stopwords safely (download if missing)
+try:
+    STOP_WORDS = set(stopwords.words("english"))
+except LookupError:
+    nltk.download("stopwords", download_dir=NLTK_DATA_DIR)
+    STOP_WORDS = set(stopwords.words("english"))
+
+# -----------------------------
+# Text cleaning function
+# -----------------------------
+
+def clean_text(text: str) -> str:
+    """
+    Cleans input text by:
+    - Lowercasing
+    - Removing URLs, emails, special characters
+    - Removing stopwords
+    - Normalizing whitespace
+    """
+
+    if not text:
+        return ""
+
     # Lowercase
     text = text.lower()
 
+    # Remove URLs
+    text = re.sub(r"http\\S+|www\\S+", " ", text)
+
+    # Remove emails
+    text = re.sub(r"\\S+@\\S+", " ", text)
+
     # Remove non-alphabetic characters
-    text = re.sub(r"[^a-z\s]", " ", text)
+    text = re.sub(r"[^a-z\\s]", " ", text)
 
-    # Tokenize
-    tokens = word_tokenize(text)
+    # Tokenize & remove stopwords
+    tokens = [word for word in text.split() if word not in STOP_WORDS]
 
-    # Remove stopwords & very short tokens
-    cleaned_tokens = [
-        word for word in tokens
-        if word not in stop_words and len(word) > 2
-    ]
+    # Reconstruct text
+    cleaned_text = " ".join(tokens)
 
-    return " ".join(cleaned_tokens)
+    return cleaned_text.strip()
