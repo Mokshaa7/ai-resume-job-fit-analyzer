@@ -1,7 +1,6 @@
 import os
 import re
 import nltk
-from nltk.corpus import stopwords
 
 # -----------------------------
 # NLTK setup (Render-safe)
@@ -9,16 +8,19 @@ from nltk.corpus import stopwords
 
 NLTK_DATA_DIR = "/tmp/nltk_data"
 
-# Ensure NLTK knows where to look
+# Ensure directory exists
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+
+# Tell NLTK where to look
 if NLTK_DATA_DIR not in nltk.data.path:
     nltk.data.path.append(NLTK_DATA_DIR)
 
-# Load stopwords safely (download if missing)
-try:
-    STOP_WORDS = set(stopwords.words("english"))
-except LookupError:
-    nltk.download("stopwords", download_dir=NLTK_DATA_DIR)
-    STOP_WORDS = set(stopwords.words("english"))
+# ALWAYS ensure stopwords are available
+nltk.download("stopwords", download_dir=NLTK_DATA_DIR, quiet=True)
+
+from nltk.corpus import stopwords
+
+STOP_WORDS = set(stopwords.words("english"))
 
 # -----------------------------
 # Text cleaning function
@@ -28,8 +30,9 @@ def clean_text(text: str) -> str:
     """
     Cleans input text by:
     - Lowercasing
-    - Removing URLs, emails, special characters
-    - Removing stopwords
+    - Removing URLs and emails
+    - Removing non-alphabetic characters
+    - Removing English stopwords
     - Normalizing whitespace
     """
 
@@ -48,10 +51,7 @@ def clean_text(text: str) -> str:
     # Remove non-alphabetic characters
     text = re.sub(r"[^a-z\\s]", " ", text)
 
-    # Tokenize & remove stopwords
+    # Remove stopwords
     tokens = [word for word in text.split() if word not in STOP_WORDS]
 
-    # Reconstruct text
-    cleaned_text = " ".join(tokens)
-
-    return cleaned_text.strip()
+    return " ".join(tokens).strip()
