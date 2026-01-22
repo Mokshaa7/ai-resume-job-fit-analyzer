@@ -2,24 +2,48 @@ import pdfplumber
 import pytesseract
 from PIL import Image
 import os
+import shutil
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+def configure_tesseract():
+    # If running on Windows (local machine)
+    if os.name == "nt":
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    else:
+        # Linux / Docker environment
+        tesseract_path = shutil.which("tesseract")
+        if tesseract_path:
+            pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
-def extract_text_from_pdf(path):
+configure_tesseract()
+
+
+def extract_text_from_pdf(pdf_path):
     text = ""
 
-    with pdfplumber.open(path) as pdf:
+    with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
-            extracted = page.extract_text()
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
 
-            if extracted:
-                text += extracted + "\n"
-            else:
+    # If text found, return it
+    if text.strip():
+        return text.strip()
+
+    # OCR fallback (safe)
+    try:
+        from PIL import Image
+
+        with pdfplumber.open(pdf_path) as pdf:
+            for page in pdf.pages:
                 img = page.to_image(resolution=300).original
-                ocr_text = pytesseract.image_to_string(img)
-                text += ocr_text + "\n"
+                text += pytesseract.image_to_string(img)
 
-    return text
+        return text.strip()
+
+    except Exception as e:
+        print("OCR failed:", e)
+        return ""
 
 
 def load_resumes_from_folder(folder):
