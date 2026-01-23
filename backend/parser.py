@@ -17,33 +17,34 @@ def configure_tesseract():
 configure_tesseract()
 
 
+import pdfplumber
+import pytesseract
+
 def extract_text_from_pdf(pdf_path):
     text = ""
 
+    # Normal PDF extraction
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             page_text = page.extract_text()
             if page_text:
                 text += page_text + "\n"
 
-    # If text found, return it
-    if text.strip():
-        return text.strip()
+    # If text found, skip OCR
+    if len(text.strip()) > 100:
+        return text
 
     # OCR fallback (safe)
     try:
-        from PIL import Image
-
+        ocr_text = ""
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages:
-                img = page.to_image(resolution=300).original
-                text += pytesseract.image_to_string(img)
+                img = page.to_image(resolution=200).original
+                ocr_text += pytesseract.image_to_string(img)
+        return ocr_text
+    except:
+        return text
 
-        return text.strip()
-
-    except Exception as e:
-        print("OCR failed:", e)
-        return ""
 
 
 def load_resumes_from_folder(folder):

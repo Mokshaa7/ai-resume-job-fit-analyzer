@@ -8,21 +8,20 @@ from backend.parser import load_resumes_from_folder
 from sentence_transformers import SentenceTransformer
 import os
 
+from sentence_transformers import SentenceTransformer
+
 _model = None
 
 def get_model():
     global _model
     if _model is None:
-        _model = SentenceTransformer(
-            "all-MiniLM-L6-v2",
-            cache_folder=os.getenv("TRANSFORMERS_CACHE", "/tmp/huggingface")
-        )
+        _model = SentenceTransformer("all-MiniLM-L6-v2")
     return _model
-
 
 def embed(text):
     model = get_model()
     return model.encode(text)
+
 
 
 def rank_resumes(resumes, job_text):
